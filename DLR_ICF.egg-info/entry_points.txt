@@ -1,0 +1,6 @@
+[console_scripts]
+DLR_ICF_comparison = DLR_ICF.DLR_ICF_comparison:main
+DLR_ICF_main = DLR_ICF.DLR_ICF_main:main
+DLR_ICF_separation = DLR_ICF.DLR_ICF_separation:main
+ICF_chromatin = DLR_ICF.ICF_chromatin:main
+

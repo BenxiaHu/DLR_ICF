@@ -1,0 +1,14 @@
+Metadata-Version: 1.2
+Name: DLR-ICF
+Version: 1.0.3
+Summary: DLR and ICF analysis
+Home-page: https://pypi.org/project/DLR_ICF/
+Author: Benxia Hu
+Author-email: hubenxia@gmail.com
+License: UNKNOWN
+Description: analyze DLR and ICF
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
