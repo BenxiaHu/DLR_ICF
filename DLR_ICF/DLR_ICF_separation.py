@@ -16,7 +16,6 @@ version_py = os.path.join(dir, "_version.py")
 exec(open(version_py).read())
 
 def annotation(balanced,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfile):
-    #balanced = int(balanced)
     bin = int(bin)
     if balanced:
         ### load balanced contact matrix
@@ -28,7 +27,6 @@ def annotation(balanced,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfil
     pix = contact.pixels()[:]
     input = cooler.annotate(pix, bins)
 
-    #### analyze DLR
     N = rangeid / bin
     input['bin1_id'] = (input['start1'] / bin).astype('int')
     input['bin2_id'] = (input['start2'] / bin).astype('int')
@@ -55,13 +53,11 @@ def annotation(balanced,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfil
     DLRmatrix1.rename(columns = {'chrom1':'chrom'}, inplace = True)
     DLRmatrix2.rename(columns = {'chrom1':'chrom','bin2_id':'bin1_id', 'bin1_id':'bin2_id'}, inplace = True)
 
-    #result = pd.merge(result,compartment,how='left',on=['chrom','bin1_id'])
-
     result = pd.concat([DLRmatrix1,DLRmatrix2])
     result = result[['chrom','bin1_id','bin2_id','count','PCid']]
     result['distance'] = result['bin2_id'] - result['bin1_id']
     result['type'] = np.where(abs(result['distance']) <= N, 'local','distal')
-
+    
     result['typeid'] = result['type'] + result['PCid']
     result = result[['chrom','bin1_id','typeid','count']] # 151470258
 
@@ -73,50 +69,32 @@ def annotation(balanced,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfil
     result = result.reset_index(level=['chrom','bin1_id'])
 
     result1 = result[['chrom','bin1_id', 'distalAA','localAA']]
-    result2 = result[['chrom','bin1_id', 'distalAB','localAA']]
-    result3 = result[['chrom','bin1_id', 'distalAA','localAB']]
-    result4 = result[['chrom','bin1_id', 'distalAB','localAB']]
-
-    result5 = result[['chrom','bin1_id', 'distalBA','localBA']]
-    result6 = result[['chrom','bin1_id', 'distalBB','localBA']]
-    result7 = result[['chrom','bin1_id', 'distalBA','localBB']]
-    result8 = result[['chrom','bin1_id', 'distalBB','localBB']]
+    result2 = result[['chrom','bin1_id', 'distalAB','localAB']]
+    result3 = result[['chrom','bin1_id', 'distalBA','localBA']]
+    result4 = result[['chrom','bin1_id', 'distalBB','localBB']]
 
     result1 = result1[(result1['distalAA'] > 0)  & (result1['localAA'] > 0)]
-    result2 = result2[(result2['distalAB'] > 0)  & (result2['localAA'] > 0)]
-    result3 = result3[(result3['distalAA'] > 0)  & (result3['localAB'] > 0)]
-    result4 = result4[(result4['distalAB'] > 0)  & (result4['localAB'] > 0)]
-    result5 = result5[(result5['distalBA'] > 0)  & (result5['localBA'] > 0)]
-    result6 = result6[(result6['distalBB'] > 0)  & (result6['localBA'] > 0)]
-    result7 = result7[(result7['distalBA'] > 0)  & (result7['localBB'] > 0)]
-    result8 = result8[(result8['distalBB'] > 0)  & (result8['localBB'] > 0)]
+    result2 = result2[(result2['distalAB'] > 0)  & (result2['localAB'] > 0)]
+    result3 = result3[(result3['distalBA'] > 0)  & (result3['localBA'] > 0)]
+    result4 = result4[(result4['distalBB'] > 0)  & (result4['localBB'] > 0)]
 
-    result1['DLR_ratio'] = np.log2((result1['distalAA'])/(result1['localAA']))
+    result1['DLR_ratio'] = np.log2((result1['distalAA'])/(result1['distalAA'] + result1['localAA']))
     result1['type'] = 'distalAA' + "_"+ 'localAA'
     result1 = result1[['chrom','bin1_id','DLR_ratio','type']]
-    result2['DLR_ratio'] = np.log2((result2['distalAB'])/(result2['localAA']))
-    result2['type'] = 'distalAB' + "_"+ 'localAA'
-    result2 = result2[['chrom','bin1_id','DLR_ratio','type']]
-    result3['DLR_ratio'] = np.log2((result3['distalAA'])/(result3['localAB']))
-    result3['type'] = 'distalAA' + "_"+ 'localAB'
-    result3 = result3[['chrom','bin1_id','DLR_ratio','type']]
-    result4['DLR_ratio'] = np.log2((result4['distalAB'])/(result4['localAB']))
-    result4['type'] = 'distalAB' + "_"+ 'localAB'
-    result4 = result4[['chrom','bin1_id','DLR_ratio','type']]
-    result5['DLR_ratio'] = np.log2((result5['distalBA'])/(result5['localBA']))
-    result5['type'] = 'distalBA' + "_"+ 'localBA'
-    result5 = result5[['chrom','bin1_id','DLR_ratio','type']]
-    result6['DLR_ratio'] = np.log2((result6['distalBB'])/(result6['localBA']))
-    result6['type'] = 'distalBB' + "_"+ 'localBA'
-    result6 = result6[['chrom','bin1_id','DLR_ratio','type']]
-    result7['DLR_ratio'] = np.log2((result7['distalBA'])/(result7['localBB']))
-    result7['type'] = 'distalBA' + "_"+ 'localBB'
-    result7 = result7[['chrom','bin1_id','DLR_ratio','type']]
-    result8['DLR_ratio'] = np.log2((result8['distalBB'])/(result8['localBB']))
-    result8['type'] = 'distalBB' + "_"+ 'localBB'
-    result8 = result8[['chrom','bin1_id','DLR_ratio','type']]
 
-    result = pd.concat([result1,result2,result3,result4,result5,result6,result7,result8])
+    result2['DLR_ratio'] = np.log2((result2['distalAB'])/(result2['distalAB'] + result2['localAB']))
+    result2['type'] = 'distalAB' + "_"+ 'localAB'
+    result2 = result2[['chrom','bin1_id','DLR_ratio','type']]
+
+    result3['DLR_ratio'] = np.log2((result3['distalBA'])/(result3['distalBA'] + result3['localBA']))
+    result3['type'] = 'distalBA' + "_"+ 'localBA'
+    result3 = result3[['chrom','bin1_id','DLR_ratio','type']]
+
+    result4['DLR_ratio'] = np.log2((result4['distalBB'])/(result4['distalBB'] + result4['localBB']))
+    result4['type'] = 'distalBB' + "_"+ 'localBB'
+    result4 = result4[['chrom','bin1_id','DLR_ratio','type']]
+
+    result = pd.concat([result1,result2,result3,result4])
     result['start'] = result['bin1_id'] * bin
     result['end'] = (result['bin1_id'] + 1) * bin
     result = result[['chrom','start','end','type','DLR_ratio']]
@@ -135,9 +113,14 @@ def annotation(balanced,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfil
     ##### ICF
     ICFmatrix = input.copy()
     ICFmatrix['type'] = np.where(input['chrom1'] != input['chrom2'],'inter','intra')
-    ICFmatrix['typeid'] = ICFmatrix['left_PCid']+ ICFmatrix['right_PCid']
-    ICFmatrix1 = ICFmatrix[['chrom1','start1','end1','count','type','typeid']]
-    ICFmatrix2 = ICFmatrix[['chrom2','start2','end2','count','type','typeid']]
+    #ICFmatrix['typeid'] = ICFmatrix['left_PCid']+ ICFmatrix['right_PCid']
+    ICFmatrix1 = ICFmatrix[['chrom1','start1','end1','count','type','left_PCid','right_PCid']]
+    ICFmatrix2 = ICFmatrix[['chrom2','start2','end2','count','type','right_PCid','left_PCid']]
+    ICFmatrix1['typeid'] = ICFmatrix1['left_PCid']+ ICFmatrix1['right_PCid']
+    ICFmatrix2['typeid'] = ICFmatrix2['right_PCid']+ ICFmatrix2['left_PCid']
+    ICFmatrix1 = ICFmatrix1[['chrom1','start1','end1','count','type','typeid']]
+    ICFmatrix2 = ICFmatrix2[['chrom2','start2','end2','count','type','typeid']]
+    
     ICFmatrix1.rename(columns = {'chrom1':'chrom', 'start1':'start', 'end1':'end'}, inplace = True)
     ICFmatrix2.rename(columns = {'chrom2':'chrom', 'start2':'start', 'end2':'end'}, inplace = True)
 
@@ -158,28 +141,26 @@ def annotation(balanced,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfil
     result4 = result[['chrom','start', 'end','interBB','intraBB']]
 
     result1 = result1[(result1['interAA'] > 0)  & (result1['intraAA'] > 0)]
-    result1['ICF_ratio'] = np.log2((result1['interAA'])/(result1['interAA']+result1['intraAA']))
+    result1['ICF_ratio'] = np.log2((result1['interAA'])/(result1['interAA'] + result1['intraAA']))
     result1['type'] = 'interAA_intraAA'
     result1 = result1[['chrom','start', 'end','ICF_ratio','type']]
 
     result2 = result2[(result2['interAB'] > 0)  & (result2['intraAB'] > 0)]
-    result2['ICF_ratio'] = np.log2((result2['interAB'])/(result2['interAB']+result2['intraAB']))
+    result2['ICF_ratio'] = np.log2((result2['interAB'])/(result2['interAB'] + result2['intraAB']))
     result2['type'] = 'interAB_intraAB'
     result2 = result2[['chrom','start', 'end','ICF_ratio','type']]
 
     result3 = result3[(result3['interBA'] > 0)  & (result3['intraBA'] > 0)]
-    result3['ICF_ratio'] = np.log2((result3['interBA'])/(result3['interBA']+result3['intraBA']))
+    result3['ICF_ratio'] = np.log2((result3['interBA'])/(result3['interBA'] + result3['intraBA']))
     result3['type'] = 'interBA_intraBA'
     result3 = result3[['chrom','start', 'end','ICF_ratio','type']]
 
     result4 = result4[(result4['interBB'] > 0)  & (result4['intraBB'] > 0)]
-    result4['ICF_ratio'] = np.log2((result4['interBB'])/(result4['interBB']+result4['intraBB']))
+    result4['ICF_ratio'] = np.log2((result4['interBB'])/(result4['interBB'] + result4['intraBB']))
     result4['type'] = 'interBB_intraBB'
     result4 = result4[['chrom','start', 'end','ICF_ratio','type']]
 
     result = pd.concat([result1,result2,result3,result4])
-
-    #result['ICF_ratio'] = np.round(result['ICF_ratio'], decimals=4)
 
     result = pd.merge(result,chrfile,on=['chrom'])
 

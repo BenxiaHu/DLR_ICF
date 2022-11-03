@@ -7,17 +7,17 @@ ICF: inter-chromosomal fraction
 
 #### calculate the DIR and ICF for individual Hi-C contact matrix
 #### usage: 
-DLR_ICF_main [-h] [-b] -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE 
+```DLR_ICF_main [-h] [-b] -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
 the format of input file is cool format.  
 the output file is bedgraph which can be visualized in IGV/UCSC or other genome browsers. 
 
 example:  
 1. used the iced normalized contact matrix to calculate DLR/ICF.  
-DLR_ICF_main **-b** -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes
+```DLR_ICF_main **-b** -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes```
 
 2. used the balanced contact matrix (mcool) to calculate DLR/ICF.  
-DLR_ICF_main -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes
+```DLR_ICF_main -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes```
 
                      
 optional arguments:  
@@ -34,13 +34,45 @@ optional arguments:
 | -o | OUTFILE    | --outfile |  OUTFILE |name of output file  |
 
 
+#### divide the DIR and ICF into different groups based on compartment definitions.  
+```DLR_ICF_separation [-h] [-b] -I INPUTPATH -f FILENAME -d DISTANCE -p Compartment -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+
+optional arguments:  
+|  |   |    |   |   |
+|:----:|:-----:|:----:|:------:|:------:|  
+| -h |  |--help|| show this help message and exit |
+| -b ||  --balanced |   | contact matrix is iced or balanced |
+| -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
+| -f | FILENAME   | --filename    | FILENAME |name of input file |
+| -d | DISTANCE  | --distance |DISTANCE|the distance of distal chromation interactions|
+| -p | compartment  | --compartment |compartment|compartment of chromaitn|
+| -r    |   RESOLUTION| --resolution | RESOLUTION| resolution of contact matrix  | 
+| -O | OUTPATH    | --outpath |  OUTPATH |path of output file  |  
+| -c | CHRSIZE    | --chrsize |  CHRSIZE |chromosome size file  |
+| -o | OUTFILE    | --outfile |  OUTFILE |name of output file  |
+
+#### output ICF groups.  
+```ICF_chromatin [-h] [-b] -I INPUTPATH -f FILENAME -p Compartment -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+
+optional arguments:  
+|  |   |    |   |   |
+|:----:|:-----:|:----:|:------:|:------:|  
+| -h |  |--help|| show this help message and exit |
+| -b ||  --balanced |   | contact matrix is iced or balanced |
+| -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
+| -f | FILENAME   | --filename    | FILENAME |name of input file |
+| -p | compartment  | --compartment |compartment|compartment of chromaitn|
+| -r    |   RESOLUTION| --resolution | RESOLUTION| resolution of contact matrix  | 
+| -O | OUTPATH    | --outpath |  OUTPATH |path of output file  |  
+| -c | CHRSIZE    | --chrsize |  CHRSIZE |chromosome size file  |
+| -o | OUTFILE    | --outfile |  OUTFILE |name of output file  |
+
 #### compare the difference in the DIR and ICF for 2 Hi-C contact matrices.  
 #### usage: 
-DLR_ICF_comparison [-h] -i INPUTPATH -t TREATMENT -c CONTROL -r RESOLUTION -O OUTPATH -o OUTFILE  
+```DLR_ICF_comparison [-h] -i INPUTPATH -t TREATMENT -c CONTROL -r RESOLUTION -O OUTPATH -o OUTFILE```  
 
 example:  
-DLR_ICF_comparison -i "the path of matrix" t "caseid" -c "controlid" -r 10000 -o 1Mb_test_10kb -O "the path of output"  
-
+```DLR_ICF_comparison -i "the path of matrix" t "caseid" -c "controlid" -r 10000 -o 1Mb_test_10kb -O "the path of output"```  
 
 Here we convert the DLR/ICF ratio into z-score, and calculate p value and fdr.  
 
