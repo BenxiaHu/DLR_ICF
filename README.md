@@ -34,6 +34,34 @@ optional arguments:
 | -o | OUTFILE    | --outfile |  OUTFILE |name of output file  |
 
 
+#### calculate gene-wise DIR and ICF for individual Hi-C contact matrix
+#### usage: 
+```DLR_ICF_gene [-h] [-b] -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -g  "hg38_gene.bed" -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+
+the format of input file is cool format.  
+the output file is bedgraph which can be visualized in IGV/UCSC or other genome browsers. 
+
+example:  
+1. used the iced normalized contact matrix to calculate gene-wise DLR/ICF.  
+```DLR_ICF_gene  **-b** -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -g  "hg38_gene.bed" -O "the path of output" -c hg38.chrom.sizes```
+
+2. used the balanced contact matrix (mcool) to calculate gene-wise DLR/ICF.  
+```DLR_ICF_gene -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -g  "hg38_gene.bed" -O "the path of output" -c hg38.chrom.sizes```
+
+optional arguments:  
+|  |   |    |   |   |
+|:----:|:-----:|:----:|:------:|:------:|  
+| -h |  |--help|| show this help message and exit |
+| -b ||  --balanced |   | contact matrix is iced or balanced |
+| -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
+| -f | FILENAME   | --filename    | FILENAME |name of input file |
+| -d | DISTANCE  | --distance |DISTANCE|the distance of distal chromation interactions|
+| -r    |   RESOLUTION| --resolution | RESOLUTION| resolution of contact matrix  | 
+| -g | genebody    | --genebody |  genebody |genebody bed file  | 
+| -O | OUTPATH    | --outpath |  OUTPATH |path of output file  |  
+| -c | CHRSIZE    | --chrsize |  CHRSIZE |chromosome size file  |
+| -o | OUTFILE    | --outfile |  OUTFILE |name of output file  |
+
 #### divide the DIR and ICF into different groups based on compartment definitions.  
 ```DLR_ICF_separation [-h] [-b] -I INPUTPATH -f FILENAME -d DISTANCE -p Compartment -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
