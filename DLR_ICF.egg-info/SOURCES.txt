@@ -1,6 +1,7 @@
 README.md
 setup.py
 DLR_ICF/DLR_ICF_comparison.py
+DLR_ICF/DLR_ICF_gene.py
 DLR_ICF/DLR_ICF_main.py
 DLR_ICF/DLR_ICF_separation.py
 DLR_ICF/ICF_chromatin.py

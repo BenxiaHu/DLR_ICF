@@ -1,0 +1,28 @@
+  package:
+    name: dlr_icf
+    version: 1.0.5
+  
+  source:
+    url: https://files.pythonhosted.org/packages/d4/72/9ec3391a29c8273d5d052eddcba74fb59e4612af7ae5b4648d029b004cfa/ExpreLev-1.0.4.tar.gz
+    md5: 91f0b8d0eee294b5326d87981b5f80aa
+
+  build:
+    number: 0
+  
+  requirements:
+    build:
+      - python >=3
+      - setuptools
+    run:
+      - python >=3
+      - numpy >=1.23
+      - pandas ==1.4.3
+      - pyranges ==0.0.117
+
+
+  about:
+    home: https://github.com/BenxiaHu/DLR_ICF
+    license: MIT
+    summary: how to run DLR_ICF to analyze DLR and ICF.
+    description: ExpreLev can be used to analyze DLR and ICF.
+    dev_url: https://github.com/BenxiaHu/DLR_ICF

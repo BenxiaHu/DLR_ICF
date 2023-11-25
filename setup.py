@@ -16,7 +16,8 @@ setup(
         "console_scripts": ['DLR_ICF_main = DLR_ICF.DLR_ICF_main:main',
                             'DLR_ICF_comparison = DLR_ICF.DLR_ICF_comparison:main',
                             'DLR_ICF_separation = DLR_ICF.DLR_ICF_separation:main',
-                            'ICF_chromatin = DLR_ICF.ICF_chromatin:main',]
+                            'ICF_chromatin = DLR_ICF.ICF_chromatin:main',
+                            'DLR_ICF_gene = DLR_ICF.DLR_ICF_gene:main',]
         },
     python_requires = '>=3.6',
     packages = ['DLR_ICF'],
