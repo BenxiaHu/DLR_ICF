@@ -100,8 +100,13 @@ h5py
 scipy.stats   
 statsmodels.stats.multitest  
 
+<<<<<<< HEAD
 #### pip install DLR-ICF==1.0.4
 https://pypi.org/project/DLR-ICF/1.0.4/
+=======
+#### pip install DLR-ICF==1.0.5
+https://pypi.org/project/DLR-ICF/1.0.5/
+>>>>>>> e45c626908396920b366304bf430ea91658a0352
 
-#### reference
+#### Reference
 Transcription Elongation Can Affect Genome 3D Structure (https://doi.org/10.1016/j.cell.2018.07.047)
