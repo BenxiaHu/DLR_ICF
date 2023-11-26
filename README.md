@@ -132,7 +132,7 @@ bioframe
 #### pip install DLR-ICF==1.0.5
 https://pypi.org/project/DLR-ICF/1.0.5/  
 
-### conda install -c bxhu dlr_icf
+#### conda install -c bxhu dlr_icf
 https://anaconda.org/bxhu/dlr_icf  
 
 #### Reference
