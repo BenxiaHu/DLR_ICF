@@ -127,8 +127,7 @@ cooler
 h5py  
 scipy.stats   
 statsmodels.stats.multitest   
-import bioframe as bf   
-import bioframe.vis   
+bioframe
 
 #### pip install DLR-ICF==1.0.5
 https://pypi.org/project/DLR-ICF/1.0.5/
