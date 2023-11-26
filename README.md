@@ -130,7 +130,10 @@ statsmodels.stats.multitest
 bioframe
 
 #### pip install DLR-ICF==1.0.5
-https://pypi.org/project/DLR-ICF/1.0.5/
+https://pypi.org/project/DLR-ICF/1.0.5/  
+
+### conda install -c bxhu dlr_icf
+https://anaconda.org/bxhu/dlr_icf  
 
 #### Reference
 Transcription Elongation Can Affect Genome 3D Structure (https://doi.org/10.1016/j.cell.2018.07.047)
