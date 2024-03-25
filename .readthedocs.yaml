@@ -6,11 +6,8 @@ version: 2
 
 # Set the version of Python and other tools you might need
 build:
-  os: Linux
+  os: "Linux"
   tools:
-      - python >=3
-      - setuptools
-    run:
       python: "3.8"
       numpy: "1.23"
       pandas: "1.4.3"
