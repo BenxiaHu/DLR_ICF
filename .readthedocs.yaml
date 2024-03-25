@@ -9,9 +9,6 @@ build:
   os: ubuntu-22.04
   tools:
       python: "3.10"
-      numpy: "1.23"
-      pandas: "1.4.3"
-      pyranges: "0.0.117"
 
 mkdocs:
   configuration: mkdocs.yml
