@@ -1,4 +1,3 @@
-README.md
 setup.py
 DLR_ICF/DLR_ICF_comparison.py
 DLR_ICF/DLR_ICF_gene.py

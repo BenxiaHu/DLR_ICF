@@ -201,7 +201,7 @@ def main():
     parser.add_argument('-o', '--outfile', dest='outfile',
                         required=True,
                         help='name of output file')
-    parser.add_argument("-V", "--version", action="version",version="DLR_ICF_comparison {}".format(__version__)\
+    parser.add_argument("-V", "--version", action="version",version="DLR_ICF_separation {}".format(__version__)\
                       ,help="Print version and exit")
     args = parser.parse_args()
     print('###Parameters:')
