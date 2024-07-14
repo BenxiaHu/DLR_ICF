@@ -129,7 +129,11 @@ scipy.stats
 statsmodels.stats.multitest   
 bioframe
 
+<<<<<<< HEAD
 #### pip install DLR-ICF==1.0.7
+=======
+#### pip install DLR-ICF==1.0.6
+>>>>>>> bb854d4e479a6be104322ec286a2687887c9d44b
 https://pypi.org/project/DLR-ICF/1.0.7/  
 
 #### conda install -c bxhu dlr_icf
