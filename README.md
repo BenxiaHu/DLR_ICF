@@ -129,7 +129,6 @@ scipy.stats
 statsmodels.stats.multitest   
 bioframe
 
-<<<<<<< HEAD
 #### pip install DLR-ICF==1.0.7
 https://pypi.org/project/DLR-ICF/1.0.7/  
 
