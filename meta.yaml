@@ -1,10 +1,10 @@
   package:
     name: dlr_icf
-    version: 1.0.5
+    version: 1.0.7
   
   source:
-    url: https://files.pythonhosted.org/packages/ba/c3/1e3035359971afffcab6c711ac92cd9ddbec457ef595b2340115798b086f/DLR_ICF-1.0.5.tar.gz
-    md5: 91f0b8d0eee294b5326d87981b5f80aa
+    url: https://files.pythonhosted.org/packages/67/cf/2f3c624a755367eba3be0c260b3a9b463fcc1f19edcf3d50d1273d0e9126/DLR_ICF-1.0.7.tar.gz
+    md5: 6123920e1548ae0b5ba7d95388376b42 
 
   build:
     number: 0

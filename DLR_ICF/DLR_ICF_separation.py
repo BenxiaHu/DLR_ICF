@@ -207,7 +207,7 @@ def main():
     print('###Parameters:')
     print(args)
     print('###Parameters')
-    annotation(args.balanced,args.inputpath,args.filename,args.distance,args.resolution,args.outpath,args.chrsize,args.compartment,args.outfile,args.version)
+    annotation(args.balanced,args.inputpath,args.filename,args.distance,args.resolution,args.outpath,args.chrsize,args.compartment,args.outfile)
 
 if __name__ == '__main__':
     main()

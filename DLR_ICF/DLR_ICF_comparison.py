@@ -61,7 +61,7 @@ def main():
     print('###Parameters:')
     print(args)
     print('###Parameters')
-    DLR_ICF_comparison(args.inputpath,args.treatment,args.control,args.resolution,args.outpath,args.outfile,args.version)
+    DLR_ICF_comparison(args.inputpath,args.treatment,args.control,args.resolution,args.outpath)
 
 if __name__ == '__main__':
     main()
