@@ -24,7 +24,7 @@ optional arguments:
 |  |   |    |   |   |
 |:----:|:-----:|:----:|:------:|:------:|  
 | -h |  |--help|| show this help message and exit |
-| -F ||  --format |   | Format of .mcool file. |
+| -F | format |  --format |   | Format of .mcool file. |
 | -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
 | -f | FILENAME   | --filename    | FILENAME |name of input file |
 | -d | DISTANCE  | --distance |DISTANCE|the distance of distal chromation interactions|
@@ -52,7 +52,7 @@ optional arguments:
 |  |   |    |   |   |
 |:----:|:-----:|:----:|:------:|:------:|  
 | -h |  |--help|| show this help message and exit |
-| -F ||  --format |   | Format of .mcool file. |
+| -F | format |  --format |   | Format of .mcool file. |
 | -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
 | -f | FILENAME   | --filename    | FILENAME |name of input file |
 | -d | DISTANCE  | --distance |DISTANCE|the distance of distal chromation interactions|
@@ -69,7 +69,7 @@ optional arguments:
 |  |   |    |   |   |
 |:----:|:-----:|:----:|:------:|:------:|  
 | -h |  |--help|| show this help message and exit |
-| -F ||  --format |   | Format of .mcool file. |
+| -F | format |  --format |   | Format of .mcool file. |
 | -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
 | -f | FILENAME   | --filename    | FILENAME |name of input file |
 | -d | DISTANCE  | --distance |DISTANCE|the distance of distal chromation interactions|
@@ -86,7 +86,7 @@ optional arguments:
 |  |   |    |   |   |
 |:----:|:-----:|:----:|:------:|:------:|  
 | -h |  |--help|| show this help message and exit |
-| -F ||  --format |   | Format of .mcool file. |
+| -F | format |  --format |   | Format of .mcool file. |
 | -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
 | -f | FILENAME   | --filename    | FILENAME |name of input file |
 | -p | compartment  | --compartment |compartment|compartment of chromaitn|
