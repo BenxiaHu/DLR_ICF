@@ -7,24 +7,24 @@ ICF: inter-chromosomal fraction
 
 #### calculate the DIR and ICF for individual Hi-C contact matrix
 #### usage: 
-```DLR_ICF_main [-h] [-b] -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+```DLR_ICF_main [-h] -F format -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
 the format of input file is cool format.  
 the output file is bedgraph which can be visualized in IGV/UCSC or other genome browsers. 
 
 example:  
 1. used the iced normalized contact matrix to calculate DLR/ICF.  
-```DLR_ICF_main **-b** -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes```
+```DLR_ICF_main -F "ICE" -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes```
 
 2. used the balanced contact matrix (mcool) to calculate DLR/ICF.  
-```DLR_ICF_main -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes```
+```DLR_ICF_main -F "ICE" -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes```
 
                      
 optional arguments:  
 |  |   |    |   |   |
 |:----:|:-----:|:----:|:------:|:------:|  
 | -h |  |--help|| show this help message and exit |
-| -b ||  --balanced |   | contact matrix is iced or balanced |
+| -F ||  --format |   | Format of .mcool file. |
 | -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
 | -f | FILENAME   | --filename    | FILENAME |name of input file |
 | -d | DISTANCE  | --distance |DISTANCE|the distance of distal chromation interactions|
@@ -36,23 +36,23 @@ optional arguments:
 
 #### calculate gene-wise DIR and ICF for individual Hi-C contact matrix
 #### usage: 
-```DLR_ICF_gene [-h] [-b] -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -g  "hg38_gene.bed" -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+```DLR_ICF_gene [-h] -F format -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -g  "hg38_gene.bed" -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
 the format of input file is cool format.  
 the output file is bedgraph which can be visualized in IGV/UCSC or other genome browsers. 
 
 example:  
 1. used the iced normalized contact matrix to calculate gene-wise DLR/ICF.  
-```DLR_ICF_gene  **-b** -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -g  "hg38_gene.bed" -O "the path of output" -c hg38.chrom.sizes```
+```DLR_ICF_gene  -F "ICE" -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -g  "hg38_gene.bed" -O "the path of output" -c hg38.chrom.sizes```
 
 2. used the balanced contact matrix (mcool) to calculate gene-wise DLR/ICF.  
-```DLR_ICF_gene -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -g  "hg38_gene.bed" -O "the path of output" -c hg38.chrom.sizes```
+```DLR_ICF_gene -F "ICE" -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -g  "hg38_gene.bed" -O "the path of output" -c hg38.chrom.sizes```
 
 optional arguments:  
 |  |   |    |   |   |
 |:----:|:-----:|:----:|:------:|:------:|  
 | -h |  |--help|| show this help message and exit |
-| -b ||  --balanced |   | contact matrix is iced or balanced |
+| -F ||  --format |   | Format of .mcool file. |
 | -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
 | -f | FILENAME   | --filename    | FILENAME |name of input file |
 | -d | DISTANCE  | --distance |DISTANCE|the distance of distal chromation interactions|
@@ -63,13 +63,13 @@ optional arguments:
 | -o | OUTFILE    | --outfile |  OUTFILE |name of output file  |
 
 #### divide the DIR and ICF into different groups based on compartment definitions.  
-```DLR_ICF_separation [-h] [-b] -I INPUTPATH -f FILENAME -d DISTANCE -p Compartment -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+```DLR_ICF_separation [-h] -F format -I INPUTPATH -f FILENAME -d DISTANCE -p Compartment -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
 optional arguments:  
 |  |   |    |   |   |
 |:----:|:-----:|:----:|:------:|:------:|  
 | -h |  |--help|| show this help message and exit |
-| -b ||  --balanced |   | contact matrix is iced or balanced |
+| -F ||  --format |   | Format of .mcool file. |
 | -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
 | -f | FILENAME   | --filename    | FILENAME |name of input file |
 | -d | DISTANCE  | --distance |DISTANCE|the distance of distal chromation interactions|
@@ -80,13 +80,13 @@ optional arguments:
 | -o | OUTFILE    | --outfile |  OUTFILE |name of output file  |
 
 #### output ICF groups.  
-```ICF_chromatin [-h] [-b] -I INPUTPATH -f FILENAME -p Compartment -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+```ICF_chromatin [-h] -F "ICE" -I INPUTPATH -f FILENAME -p Compartment -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
 optional arguments:  
 |  |   |    |   |   |
 |:----:|:-----:|:----:|:------:|:------:|  
 | -h |  |--help|| show this help message and exit |
-| -b ||  --balanced |   | contact matrix is iced or balanced |
+| -F ||  --format |   | Format of .mcool file. |
 | -I | INPUTPATH  | --inputpath | INPUTPATH |path of input file  |  
 | -f | FILENAME   | --filename    | FILENAME |name of input file |
 | -p | compartment  | --compartment |compartment|compartment of chromaitn|
@@ -129,8 +129,8 @@ scipy.stats
 statsmodels.stats.multitest   
 bioframe
 
-#### pip install DLR-ICF==1.0.7
-https://pypi.org/project/DLR-ICF/1.0.7/  
+#### pip install DLR-ICF==1.0.8
+https://pypi.org/project/DLR-ICF/1.0.8/  
 
 #### conda install -c bxhu dlr_icf
 https://anaconda.org/bxhu/dlr_icf  

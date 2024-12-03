@@ -14,18 +14,29 @@ dir = os.path.dirname(__file__)
 version_py = os.path.join(dir, "_version.py")
 exec(open(version_py).read())
 
-def annotation(balanced,inputpath,filename,bin,outpath,chrsize,PC,outfile):
+def annotation(format,inputpath,filename,bin,outpath,chrsize,PC,outfile):
     #balanced = int(balanced)
     bin = int(bin)
-    if balanced:
+    if format == "balance":
         ### load balanced contact matrix
-        contact = cooler.Cooler(inputpath+'/'+filename+'_'+str(bin)+'.mcool::resolutions/'+str(bin))
-    else:
-        ### load ICE/KR normalized contact matrix #SCA-Veh_iced_100000.cool
+        ### AD_rep1.mcool
+        contact = cooler.Cooler(inputpath+'/'+filename+'.mcool::resolutions/'+str(bin))
+        bins = contact.bins()[:]
+        pix = contact.pixels()[:]
+        input = cooler.annotate(pix, bins)
+        input2 = contact.matrix(balance=True, as_pixels=True, join=True)[:]
+        input = pd.merge(input, input2,on=['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','count'], how='right')
+        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','bin1_id','bin2_id','balanced']]
+        input['balanced'] = input['balanced'].fillna(0)
+        input = input.rename(columns={'balanced': 'count'})
+    elif format == "ICE":
+        ### load ICE normalized contact matrix #SCA-Veh_iced_100000.cool
         contact = cooler.Cooler(inputpath+'/'+filename+'_'+str(bin)+'.cool')
-    bins = contact.bins()[:]
-    pix = contact.pixels()[:]
-    input = cooler.annotate(pix, bins)
+        bins = contact.bins()[:]
+        pix = contact.pixels()[:]
+        input = cooler.annotate(pix, bins)
+    else:
+        print("input format is wrong")
 
     ##### ICF
 
@@ -71,9 +82,8 @@ def annotation(balanced,inputpath,filename,bin,outpath,chrsize,PC,outfile):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-b', '--balanced', dest='balanced',
-                        default=False,action='store_false',
-                        help='type of contact matrix')
+    parser.add_argument('-F', '--format', type=str, default='balance', 
+                       choices=['balance', 'ICE'], help='Format of .mcool file.')
     parser.add_argument('-I', '--inputpath', dest='inputpath',
                         required=True,
                         help='path of input file')
