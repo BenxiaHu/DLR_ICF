@@ -14,29 +14,25 @@ dir = os.path.dirname(__file__)
 version_py = os.path.join(dir, "_version.py")
 exec(open(version_py).read())
 
-def annotation(format,inputpath,filename,bin,outpath,chrsize,PC,outfile):
-    #balanced = int(balanced)
+def annotation(normal,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
+    # c.matrix(balance=False, as_pixels=True, join=True)[1000:1005, 1000:1005] check it
     bin = int(bin)
-    if format == "balance":
-        ### load balanced contact matrix
+    contact = cooler.Cooler(inputpath+'/'+filename+'.mcool::resolutions/'+str(bin))
+    if normal == "balance":
+        ### load cooler balanced contact matrix
         ### AD_rep1.mcool
-        contact = cooler.Cooler(inputpath+'/'+filename+'.mcool::resolutions/'+str(bin))
-        bins = contact.bins()[:]
-        pix = contact.pixels()[:]
-        input = cooler.annotate(pix, bins)
-        input2 = contact.matrix(balance=True, as_pixels=True, join=True)[:]
-        input = pd.merge(input, input2,on=['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','count'], how='right')
-        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','bin1_id','bin2_id','balanced']]
-        input['balanced'] = input['balanced'].fillna(0)
+        input = contact.matrix(balance=True, as_pixels=True, join=True)[:]
+        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','balanced']]
+        # input['balanced'] = input['balanced'].fillna(0)
+        input = input.dropna(subset=['balanced'])
         input = input.rename(columns={'balanced': 'count'})
-    elif format == "ICE":
-        ### load ICE normalized contact matrix #SCA-Veh_iced_100000.cool
-        contact = cooler.Cooler(inputpath+'/'+filename+'_'+str(bin)+'.cool')
-        bins = contact.bins()[:]
-        pix = contact.pixels()[:]
-        input = cooler.annotate(pix, bins)
+    elif normal == "ICE":
+        ### load HiC-Pro ICE normalized contact matrix
+        input = contact.matrix(balance=False, as_pixels=True, join=True)[:]
+        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','count']]
     else:
-        print("input format is wrong")
+        print("input is wrong")
+    del contact
 
     ##### ICF
 
@@ -60,9 +56,9 @@ def annotation(format,inputpath,filename,bin,outpath,chrsize,PC,outfile):
     ICFmatrix1 = input.copy()
     ICFmatrix2 = input[['chrom2','start2','end2','chrom1','start1','end1','count','right_PCid','left_PCid','type']]
     ICFmatrix2.rename(columns = {'chrom2':'chrom1', 'start2':'start1', 'end2':'end1','chrom1':'chrom2', 'start1':'start2', 'end1':'end2','right_PCid':'left_PCid','left_PCid':'right_PCid'}, inplace = True)
-
+    del input
     result = pd.concat([ICFmatrix1,ICFmatrix2])
- 
+    del ICFmatrix1,ICFmatrix2
     chrfile = pd.read_csv(chrsize,sep="\t",header=None)
     chrfile.rename(columns = {0:'chrom1', 1:'size'}, inplace = True)
 
@@ -77,13 +73,13 @@ def annotation(format,inputpath,filename,bin,outpath,chrsize,PC,outfile):
             result.iloc[i,5] = result.iloc[i,10]
     result = result[['chrom1','start1','end1','chrom2','start2','end2','count','right_PCid','left_PCid','type']]
     result.to_csv(outpath+'/'+outfile+'_ICF_AB.bed',sep="\t",header=True,index=False)
-    del ICFmatrix,ICFmatrix1,ICFmatrix2,result
+    del result
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-F', '--format', type=str, default='balance', 
-                       choices=['balance', 'ICE'], help='Format of .mcool file.')
+    parser.add_argument('-N', '--normal', type=str, default='balance', 
+                       choices=['balance', 'ICE'], help='normalization of .mcool file.')
     parser.add_argument('-I', '--inputpath', dest='inputpath',
                         required=True,
                         help='path of input file')
@@ -111,7 +107,7 @@ def main():
     print('###Parameters:')
     print(args)
     print('###Parameters')
-    annotation(args.balanced,args.inputpath,args.filename,args.resolution,args.outpath,args.chrsize,args.compartment,args.outfile)
+    annotation(args.normal,args.inputpath,args.filename,args.resolution,args.outpath,args.chrsize,args.compartment,args.outfile)
 
 if __name__ == '__main__':
     main()

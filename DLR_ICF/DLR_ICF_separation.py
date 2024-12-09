@@ -15,28 +15,25 @@ dir = os.path.dirname(__file__)
 version_py = os.path.join(dir, "_version.py")
 exec(open(version_py).read())
 
-def annotation(format,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfile):
+def annotation(normal,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
+    # c.matrix(balance=False, as_pixels=True, join=True)[1000:1005, 1000:1005] check it
     bin = int(bin)
-    if format == "balance":
-        ### load balanced contact matrix
+    contact = cooler.Cooler(inputpath+'/'+filename+'.mcool::resolutions/'+str(bin))
+    if normal == "balance":
+        ### load cooler balanced contact matrix
         ### AD_rep1.mcool
-        contact = cooler.Cooler(inputpath+'/'+filename+'.mcool::resolutions/'+str(bin))
-        bins = contact.bins()[:]
-        pix = contact.pixels()[:]
-        input = cooler.annotate(pix, bins)
-        input2 = contact.matrix(balance=True, as_pixels=True, join=True)[:]
-        input = pd.merge(input, input2,on=['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','count'], how='right')
-        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','bin1_id','bin2_id','balanced']]
-        input['balanced'] = input['balanced'].fillna(0)
+        input = contact.matrix(balance=True, as_pixels=True, join=True)[:]
+        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','balanced']]
+        # input['balanced'] = input['balanced'].fillna(0)
+        input = input.dropna(subset=['balanced'])
         input = input.rename(columns={'balanced': 'count'})
-    elif format == "ICE":
-        ### load ICE normalized contact matrix #SCA-Veh_iced_100000.cool
-        contact = cooler.Cooler(inputpath+'/'+filename+'_'+str(bin)+'.cool')
-        bins = contact.bins()[:]
-        pix = contact.pixels()[:]
-        input = cooler.annotate(pix, bins)
+    elif normal == "ICE":
+        ### load HiC-Pro ICE normalized contact matrix
+        input = contact.matrix(balance=False, as_pixels=True, join=True)[:]
+        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','count']]
     else:
-        print("input format is wrong")
+        print("input is wrong")
+    del contact
 
     N = rangeid / bin
     input['bin1_id'] = (input['start1'] / bin).astype('int')
@@ -58,6 +55,7 @@ def annotation(format,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfile)
     DLRmatrix = input[input['chrom1'] == input['chrom2']]
     DLRmatrix1 = DLRmatrix[['chrom1','bin1_id','bin2_id','count','left_PCid','right_PCid']]
     DLRmatrix2 = DLRmatrix[['chrom1','bin2_id','bin1_id','count','right_PCid','left_PCid']]
+    del DLRmatrix
     DLRmatrix1['PCid'] = DLRmatrix1['left_PCid'] + DLRmatrix1['right_PCid']
     DLRmatrix2['PCid'] = DLRmatrix1['right_PCid'] + DLRmatrix1['left_PCid']
 
@@ -65,6 +63,7 @@ def annotation(format,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfile)
     DLRmatrix2.rename(columns = {'chrom1':'chrom','bin2_id':'bin1_id', 'bin1_id':'bin2_id'}, inplace = True)
 
     result = pd.concat([DLRmatrix1,DLRmatrix2])
+    del DLRmatrix2,DLRmatrix1
     result = result[['chrom','bin1_id','bin2_id','count','PCid']]
     result['distance'] = result['bin2_id'] - result['bin1_id']
     result['type'] = np.where(abs(result['distance']) <= N, 'local','distal')
@@ -123,10 +122,11 @@ def annotation(format,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfile)
 
     ##### ICF
     ICFmatrix = input.copy()
-    ICFmatrix['type'] = np.where(input['chrom1'] != input['chrom2'],'inter','intra')
-    #ICFmatrix['typeid'] = ICFmatrix['left_PCid']+ ICFmatrix['right_PCid']
+    del input
+    ICFmatrix['type'] = np.where(ICFmatrix['chrom1'] != ICFmatrix['chrom2'],'inter','intra')
     ICFmatrix1 = ICFmatrix[['chrom1','start1','end1','count','type','left_PCid','right_PCid']]
     ICFmatrix2 = ICFmatrix[['chrom2','start2','end2','count','type','right_PCid','left_PCid']]
+    del ICFmatrix
     ICFmatrix1['typeid'] = ICFmatrix1['left_PCid']+ ICFmatrix1['right_PCid']
     ICFmatrix2['typeid'] = ICFmatrix2['right_PCid']+ ICFmatrix2['left_PCid']
     ICFmatrix1 = ICFmatrix1[['chrom1','start1','end1','count','type','typeid']]
@@ -136,6 +136,7 @@ def annotation(format,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfile)
     ICFmatrix2.rename(columns = {'chrom2':'chrom', 'start2':'start', 'end2':'end'}, inplace = True)
 
     result = pd.concat([ICFmatrix1,ICFmatrix2])
+    del ICFmatrix1,ICFmatrix2
 
     chrfile = pd.read_csv(chrsize,sep="\t",header=None)
     chrfile.rename(columns = {0:'chrom', 1:'size'}, inplace = True)
@@ -180,13 +181,13 @@ def annotation(format,inputpath,filename,rangeid,bin,outpath,chrsize,PC,outfile)
             result.iloc[i,2] = result.iloc[i,5]
     result = result[['chrom','start', 'end','type','ICF_ratio']]
     result.to_csv(outpath+'/'+outfile+'_ICF_ratio.bedgraph',sep="\t",header=False,index=False)
-    del ICFmatrix,ICFmatrix1,ICFmatrix2,result
+    del result
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-F', '--format', type=str, default='balance', 
-                       choices=['balance', 'ICE'], help='Format of .mcool file.')
+    parser.add_argument('-N', '--normal', type=str, default='balance', 
+                       choices=['balance', 'ICE'], help='normalization of .mcool file.')
     parser.add_argument('-I', '--inputpath', dest='inputpath',
                         required=True,
                         help='path of input file')
@@ -217,7 +218,7 @@ def main():
     print('###Parameters:')
     print(args)
     print('###Parameters')
-    annotation(args.balanced,args.inputpath,args.filename,args.distance,args.resolution,args.outpath,args.chrsize,args.compartment,args.outfile)
+    annotation(args.normal,args.inputpath,args.filename,args.distance,args.resolution,args.outpath,args.chrsize,args.compartment,args.outfile)
 
 if __name__ == '__main__':
     main()
