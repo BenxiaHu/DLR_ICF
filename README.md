@@ -7,9 +7,9 @@ ICF: inter-chromosomal fraction
 
 #### calculate the DIR and ICF for individual Hi-C contact matrix
 #### usage: 
-```DLR_ICF_main [-h] -F format -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+```DLR_ICF_main [-h] -N normal -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
-the format of input file is cool format.  
+the format of input file is mcool format.  
 the output file is bedgraph which can be visualized in IGV/UCSC or other genome browsers. 
 
 example:  
@@ -36,9 +36,9 @@ optional arguments:
 
 #### calculate gene-wise DIR and ICF for individual Hi-C contact matrix
 #### usage: 
-```DLR_ICF_gene [-h] -N format -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -g  "hg38_gene.bed" -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+```DLR_ICF_gene [-h] -N normal -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -g  "hg38_gene.bed" -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
-the format of input file is cool format.  
+the format of input file is mcool format.  
 the output file is bedgraph which can be visualized in IGV/UCSC or other genome browsers. 
 
 example:  
@@ -63,7 +63,7 @@ optional arguments:
 | -o | OUTFILE    | --outfile |  OUTFILE |name of output file  |
 
 #### divide the DIR and ICF into different groups based on compartment definitions.  
-```DLR_ICF_separation [-h] -N format -I INPUTPATH -f FILENAME -d DISTANCE -p Compartment -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
+```DLR_ICF_separation [-h] -N normal -I INPUTPATH -f FILENAME -d DISTANCE -p Compartment -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
 optional arguments:  
 |  |   |    |   |   |
