@@ -9,14 +9,14 @@ ICF: inter-chromosomal fraction
 #### usage: 
 ```DLR_ICF_main [-h] -F normal -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
-the format of input file is mcool format.  
+the format of input file is cool format.  
 the output file is bedgraph which can be visualized in IGV/UCSC or other genome browsers. 
 
 example:  
 1. used the iced normalized contact matrix to calculate DLR/ICF.  
 ```DLR_ICF_main -F "ICE" -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes```
 
-2. used the balanced contact matrix (mcool) to calculate DLR/ICF.  
+2. used the balanced contact matrix (cool) to calculate DLR/ICF.  
 ```DLR_ICF_main -F "ICE" -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -O "the path of output" -c hg38.chrom.sizes```
 
                      
@@ -38,14 +38,14 @@ optional arguments:
 #### usage: 
 ```DLR_ICF_gene [-h] -F normal -I INPUTPATH -f FILENAME -d DISTANCE -r RESOLUTION -g  "hg38_gene.bed" -O OUTPATH -c CHRSIZE -o OUTFILE``` 
 
-the format of input file is mcool format.  
+the format of input file is cool format.  
 the output file is bedgraph which can be visualized in IGV/UCSC or other genome browsers. 
 
 example:  
 1. used the iced normalized contact matrix to calculate gene-wise DLR/ICF.  
 ```DLR_ICF_gene  -f "ICE" -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -g  "hg38_gene.bed" -O "the path of output" -c hg38.chrom.sizes```
 
-2. used the balanced contact matrix (mcool) to calculate gene-wise DLR/ICF.  
+2. used the balanced contact matrix (cool) to calculate gene-wise DLR/ICF.  
 ```DLR_ICF_gene -f "ICE" -I "the path of matrix" -f "test" -d 1000000 -r 10000 -o 1Mb_test_10kb -g  "hg38_gene.bed" -O "the path of output" -c hg38.chrom.sizes```
 
 optional arguments:  
