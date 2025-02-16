@@ -18,30 +18,42 @@ dir = os.path.dirname(os.path.abspath(__file__))
 version_py = os.path.join(dir, "_version.py")
 exec(open(version_py).read())
 
-def annotation(normal,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
+def annotation(format,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
     # c.matrix(balance=False, as_pixels=True, join=True)[1000:1005, 1000:1005] check it
     bin = int(bin)
-    contact = cooler.Cooler(inputpath+'/'+filename+'.mcool::resolutions/'+str(bin))
-    if normal == "balance":
+    contact = cooler.Cooler(inputpath+'/'+filename+'.cool')
+    if format == "balance":
         ### load cooler balanced contact matrix
-        ### AD_rep1.mcool
-        input = contact.matrix(balance=True, as_pixels=True, join=True)[:]
-        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','balanced']]
-        # input['balanced'] = input['balanced'].fillna(0)
-        input = input.dropna(subset=['balanced'])
-        input = input.rename(columns={'balanced': 'count'})
-    elif normal == "ICE":
+        ### AD_rep1.cool
+        bins = contact.bins()[:]
+        pix = contact.pixels()[:]
+        weights, metadata = cooler.balance_cooler(contact, rescale_marginals=False)
+        pix['weight1'] = weights[pix['bin1_id']]
+        pix['weight2'] = weights[pix['bin2_id']]
+        input = cooler.annotate(pix, bins)
+        del weights,metadata,pix, bins
+        # the "weights" as used by cooler are the reciprocals of the "biases"
+        # w_i = 1 / beta_i
+        input['count'] = input['count'] * input['weight1'] * input['weight2']
+        input = input.dropna(subset=['count'])
+        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','count']]
+    elif format == "ICE":
         ### load HiC-Pro ICE normalized contact matrix
         input = contact.matrix(balance=False, as_pixels=True, join=True)[:]
+        input = input.dropna(subset=['count'])
         input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','count']]
     else:
-        print("input is wrong")
+        print("input format is wrong")
     del contact
-
+    #### analyze DLR
     N = rangeid / bin
-    input['bin1_id'] = (input['start1'] / bin).astype('int')
-    input['bin2_id'] = (input['start2'] / bin).astype('int')
-    input = input[input['bin1_id'] != input['bin2_id']]
+
+    input.loc[:, 'bin1_id'] = (input['start1'] / bin).astype('int')
+    input.loc[:, 'bin2_id'] = (input['start2'] / bin).astype('int')
+
+    ## remove chrY
+    input = input[input['chrom1'] != 'chrY']
+    input = input[input['chrom2'] != 'chrY']
 
     genebody = pd.read_csv(gene,sep="\t",header=0)
 
@@ -95,7 +107,7 @@ def annotation(normal,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
     for i in range(result.shape[0]):
         if(result.iloc[i,2] > result.iloc[i,4]):
             result.iloc[i,2] = result.iloc[i,4]
-    result = result[['chrom1','start', 'end','DLR_ratio']]
+    result = result[['chrom1','start', 'end','distal','local','DLR_ratio']]
     result.to_csv(outpath+'/'+outfile+'_DLR_ratio.bedgraph',sep="\t",header=False,index=False)
     
     del result
@@ -128,14 +140,14 @@ def annotation(normal,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
     for i in range(result.shape[0]):
         if(result.iloc[i,2] > result.iloc[i,6]):
             result.iloc[i,2] = result.iloc[i,6]
-    result = result[['chrom','start', 'end','ICF_ratio']]
+    result = result[['chrom','start', 'end','distal','local','ICF_ratio']]
     result.to_csv(outpath+'/'+outfile+'_ICF_ratio.bedgraph',sep="\t",header=False,index=False)
     del result
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-N', '--normal', type=str, default='balance', 
-                       choices=['balance', 'ICE'], help='normalization of .mcool file.')
+    parser.add_argument('-F', '--format', type=str, default='balance', 
+                       choices=['balance', 'ICE'], help='Format of .cool file.')
     parser.add_argument('-I', '--inputpath', dest='inputpath',
                         required=True,
                         help='path of input file')
@@ -166,7 +178,7 @@ def main():
     print('###Parameters:')
     print(args)
     print('###Parameters')
-    annotation(args.normal,args.inputpath,args.filename,args.distance,args.resolution,args.outpath,args.chrsize,args.genebody,args.outfile)
+    annotation(args.format,args.inputpath,args.filename,args.distance,args.resolution,args.outpath,args.chrsize,args.genebody,args.outfile)
 
 if __name__ == '__main__':
     main()

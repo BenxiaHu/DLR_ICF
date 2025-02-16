@@ -15,24 +15,32 @@ dir = os.path.dirname(__file__)
 version_py = os.path.join(dir, "_version.py")
 exec(open(version_py).read())
 
-def annotation(normal,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
+def annotation(format,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
     # c.matrix(balance=False, as_pixels=True, join=True)[1000:1005, 1000:1005] check it
     bin = int(bin)
-    contact = cooler.Cooler(inputpath+'/'+filename+'.mcool::resolutions/'+str(bin))
-    if normal == "balance":
+    contact = cooler.Cooler(inputpath+'/'+filename+'.cool')
+    if format == "balance":
         ### load cooler balanced contact matrix
-        ### AD_rep1.mcool
-        input = contact.matrix(balance=True, as_pixels=True, join=True)[:]
-        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','balanced']]
-        # input['balanced'] = input['balanced'].fillna(0)
-        input = input.dropna(subset=['balanced'])
-        input = input.rename(columns={'balanced': 'count'})
-    elif normal == "ICE":
+        ### AD_rep1.cool
+        bins = contact.bins()[:]
+        pix = contact.pixels()[:]
+        weights, metadata = cooler.balance_cooler(contact, rescale_marginals=False)
+        pix['weight1'] = weights[pix['bin1_id']]
+        pix['weight2'] = weights[pix['bin2_id']]
+        input = cooler.annotate(pix, bins)
+        del weights,metadata,pix, bins
+        # the "weights" as used by cooler are the reciprocals of the "biases"
+        # w_i = 1 / beta_i
+        input['count'] = input['count'] * input['weight1'] * input['weight2']
+        input = input.dropna(subset=['count'])
+        input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','count']]
+    elif format == "ICE":
         ### load HiC-Pro ICE normalized contact matrix
         input = contact.matrix(balance=False, as_pixels=True, join=True)[:]
+        input = input.dropna(subset=['count'])
         input = input[['chrom1', 'start1', 'end1', 'chrom2', 'start2', 'end2','count']]
     else:
-        print("input is wrong")
+        print("input format is wrong")
     del contact
     #### analyze DLR
     N = rangeid / bin
@@ -66,17 +74,20 @@ def annotation(normal,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
 
     result['DLR_ratio'] = np.log2((result['distal'])/(result['local']))
     result['DLR_ratio'] = np.round(result['DLR_ratio'], decimals=4)
+    result['distal'] = np.round(result['distal'], decimals=4)
+    result['local'] = np.round(result['local'], decimals=4)
     result['start'] = result['bin1_id'] * bin
-    result['end'] = (result['bin1_id'] + 1) * bin
-    result = result[['chrom1','start','end','DLR_ratio']]
+    result['end'] = result['start'] + 1 * bin
+    result = result[['chrom1','start','end','distal','local','DLR_ratio']]
+    print(result)
     chrfile = pd.read_csv(chrsize,sep="\t",header=None)
     chrfile.rename(columns = {0:'chrom1', 1:'size'}, inplace = True)
     result = pd.merge(result,chrfile,on=['chrom1'])
 
     for i in range(result.shape[0]):
-        if(result.iloc[i,2] > result.iloc[i,4]):
-            result.iloc[i,2] = result.iloc[i,4]
-    result = result[['chrom1','start', 'end','DLR_ratio']]
+        if(result.iloc[i,2] > result.iloc[i,6]):
+            result.iloc[i,2] = result.iloc[i,6]
+    result = result[['chrom1','start', 'end','distal','local','DLR_ratio']]
     result.to_csv(outpath+'/'+outfile+'_DLR_ratio.bedgraph',sep="\t",header=False,index=False)
     
     del result
@@ -101,7 +112,8 @@ def annotation(normal,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
     result = result.reset_index(level=['chrom','start', 'end'])
     result['ICF_ratio'] = np.log2((result['inter'])/(result['inter']+result['intra']))
     result['ICF_ratio'] = np.round(result['ICF_ratio'], decimals=4)
-
+    result['inter'] = np.round(result['inter'], decimals=4)
+    result['intra'] = np.round(result['intra'], decimals=4)
     chrfile = pd.read_csv(chrsize,sep="\t",header=None)
     chrfile.rename(columns = {0:'chrom', 1:'size'}, inplace = True)
     result = pd.merge(result,chrfile,on=['chrom'])
@@ -109,15 +121,15 @@ def annotation(normal,inputpath,filename,rangeid,bin,outpath,chrsize,outfile):
     for i in range(result.shape[0]):
         if(result.iloc[i,2] > result.iloc[i,6]):
             result.iloc[i,2] = result.iloc[i,6]
-    result = result[['chrom','start', 'end','ICF_ratio']]
+    result = result[['chrom','start', 'end','inter','intra','ICF_ratio']]
     result.to_csv(outpath+'/'+outfile+'_ICF_ratio.bedgraph',sep="\t",header=False,index=False)
     del result
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-N', '--normal', type=str, default='balance', 
-                       choices=['balance', 'ICE'], help='normalization of .mcool file.')
+    parser.add_argument('-F', '--format', type=str, default='balance', 
+                       choices=['balance', 'ICE'], help='Format of .cool file.')
     parser.add_argument('-I', '--inputpath', dest='inputpath',
                         required=True,
                         help='path of input file')
@@ -145,7 +157,7 @@ def main():
     print('###Parameters:')
     print(args)
     print('###Parameters')
-    annotation(args.normal,args.inputpath,args.filename,args.distance,args.resolution,args.outpath,args.chrsize,args.outfile)
+    annotation(args.format,args.inputpath,args.filename,args.distance,args.resolution,args.outpath,args.chrsize,args.outfile)
 
 if __name__ == '__main__':
     main()
