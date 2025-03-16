@@ -136,5 +136,5 @@ https://pypi.org/project/DLR-ICF/1.10.0/
 https://anaconda.org/bxhu/dlr_icf  
 
 #### Reference
-Transcription Elongation Can Affect Genome 3D Structure (https://doi.org/10.1016/j.cell.2018.07.047)
-Rewired 3D Genome Architecture in Sickle Cell Disease Mitigates T cell Ferroptosis in Renal Medullary Carcinoma (accepted into Immunity)
+1. Transcription Elongation Can Affect Genome 3D Structure (https://doi.org/10.1016/j.cell.2018.07.047)
+2. Rewired 3D Genome Architecture in Sickle Cell Disease Mitigates T cell Ferroptosis in Renal Medullary Carcinoma (accepted into Immunity)
