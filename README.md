@@ -136,5 +136,5 @@ https://pypi.org/project/DLR-ICF/1.10.0/
 https://anaconda.org/bxhu/dlr_icf  
 
 #### Reference
-Transcription Elongation Can Affect Genome 3D Structure (https://doi.org/10.1016/j.cell.2018.07.047)
-Sickle cell disease induces chromatin introversion and ferroptosis in CD8+ T cells to suppress anti-tumor immunity (https://www.cell.com/immunity/fulltext/S1074-7613(25)00183-9)
+1. Transcription Elongation Can Affect Genome 3D Structure (https://doi.org/10.1016/j.cell.2018.07.047)  
+2. Sickle cell disease induces chromatin introversion and ferroptosis in CD8+ T cells to suppress anti-tumor immunity (https://www.cell.com/immunity/fulltext/S1074-7613(25)00183-9)
