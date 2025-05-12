@@ -107,7 +107,7 @@ Here we convert the DLR/ICF ratio into z-score, and calculate p value and fdr.
 the output file is bedgraph which can be visualized in IGV/UCSC or other genome browsers. 
 
 optional arguments:  
-|  |   |    |   |   |
+|   |   |    |   |   |
 |:----:|:-----:|:----:|:------:|:------:|  
 |  -h    |      |   --help   |           | show this help message and exit         |
 |  -i    |   INPUTPATH | --inputpath  | INPUTPATH | path of input file             |
@@ -137,3 +137,4 @@ https://anaconda.org/bxhu/dlr_icf
 
 #### Reference
 Transcription Elongation Can Affect Genome 3D Structure (https://doi.org/10.1016/j.cell.2018.07.047)
+Sickle cell disease induces chromatin introversion and ferroptosis in CD8+ T cells to suppress anti-tumor immunity (https://www.cell.com/immunity/fulltext/S1074-7613(25)00183-9)
